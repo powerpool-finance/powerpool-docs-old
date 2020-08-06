@@ -55,9 +55,9 @@
 </ol>
 <p>Additionally, CPV has one special function that wasn’t present in other lending protocols before. It comes down to direct voting using remaining (unclaimed by borrowers) GTs in the Power Pool lending contracts. So, CVP captures value from the possibility to govern the Power Pool protocol itself and from the possibility to decide how pooled GTs will vote.</p>
 
-<p>The CVP holders decide how unclaimed pooled governance tokens will vote at the every vote occuring in listed Defi protocols</p>
-
-<p>The CVP token doesn't have a premine and has pure liquidity</p>
+>The CVP holders decide how unclaimed pooled governance tokens will vote at the every vote occuring in listed Defi protocols
+>
+>The CVP token doesn't have a premine and has pure liquidity
 
 <p>The token metrics, as well as details of special token functions will be fully featured in the special article coming next days. All you need to know - you cannot buy this token now, there is no sale. If you found something listed at any DEX until the protocol is live in the Mainnet - it is a SCAM. The only option to receive tokens is participation in liquidity mining.</p>
 <h4>Roadmap and how to participate?</h4>
