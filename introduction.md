@@ -64,7 +64,7 @@
 <p>At the moment, we have our project ready to be deployed in testnet. Mainnet comes soon. There are three main phases for bootstrapping the protocol:</p>
 <ol>
 <li>The testnet phase. As our product is experimental, we need to test the functionality of the main components in the safe testnet environment. We invite all Defi community members to test protocol, find bugs, and try to attack it. It will last approximately one week. Subscribe to our Twitter if you don’t want to miss it! Sweet bounty for active participants is included</li>
-<li>The babynet phase. We are engineers trying to make a secure and reliable product, and we found it very risky to attract a massive amount of liquidity to unaudited protocol. During the limited mainnet phase the Baby version of PowerPool will be launched with a $25,000 liquidity cap. We estimate that the limited phase will last two weeks, and applications will be open soon.</li>
+<li>The babynet phase. We are engineers trying to make a secure and reliable product, and we found it very risky to attract a massive amount of liquidity to unaudited protocol. During the limited mainnet phase the Baby version of PowerPool will be launched with a $50,000 liquidity cap. We estimate that the limited phase will last two weeks, and applications will be open soon.</li>
 <li>The mainnet phase. This phase is uncapped and starts right after passing the security audit and carefully testing all protocol features. From this moment PowerPool will grow, attract more and more liquidity to become a real force in the governance of Defi protocols controlled by the community.</li>
 </ol>
 <p><b>Social Links:</b></p>
