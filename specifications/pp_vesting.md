@@ -22,10 +22,12 @@ The contract is initialized with the following parameters that can't be changed 
 - any ERC20/ERC721 tokens or ETHs accidentally sent to the contract will be permanently locked there;
 - initialization with Merkle tree root hash, which saves deployment gas usage, was intentionally ignored in order to simplify contract;
 - ERC20 token CAP is 100,000,000 * 10**18 (100000000000000000000000000);
-- Calculations will be covered with SafeMath;
-- Compilation configuration: Solidity version: v0.6.12, optimizer: enabled, runs: 20000, EVM: Istanbul (we're flexible on compiler version);
-- The contract doesn't use a proxy pattern, there is no way to upgrade it;
-- There will be multiple instances of this contract with different initialization parameters;
+- calculations will be covered with SafeMath;
+- compilation configuration: Solidity version: v0.6.12, optimizer: enabled, runs: 20000, EVM: Istanbul (we're flexible on compiler version);
+- the contract doesn't use a proxy pattern, there is no way to upgrade it;
+- there will be multiple instances of this contract with different initialization parameters;
+- the contract is compatible with the following `CompInterface` and provides cached getPriorVotes() information like CVP token does;
+- to provide detailed information about member balance at a specific block, each withdrawal() updates cached value similar to CVP token.
 
 ## Methods
 
@@ -66,11 +68,21 @@ interface ICRV {
   function delegate(address delegatee) external;
 }
 
-contract PPVesting {
+interface CompInterface {
+    function getPriorVotes(address account, uint blockNumber) external view returns (uint96);
+}
 
+contract PPVesting is CompInterface {
+    
   struct Member {
     bool active;
     uint128 alreadyClaimed;
+  }
+  
+  /// @notice A checkpoint for marking number of votes from a given block
+  struct Checkpoint {
+    uint32 fromBlock;
+    uint96 votes;
   }
 
   address immutable public token;
@@ -81,6 +93,10 @@ contract PPVesting {
   address public owner;
 
   mapping(address => Member) public members;
+  /// @notice A record of votes checkpoints for each account, by index
+  mapping (address => mapping (uint32 => Checkpoint)) public checkpoints;
+  /// @notice The number of checkpoints for each account
+  mapping (address => uint32) public numCheckpoints;
 
   constructor(
     address _tokenAddress,
@@ -102,22 +118,58 @@ contract PPVesting {
         members[_membersList[i]].active = true;
     }
   }
-
+  
   function withdraw(address _to) external {
     require(members[msg.sender].active == true);
 
     uint256 amount = availableToWithdrawForMember(msg.sender);
     require(amount > 0);
-
+  
     members[msg.sender].alreadyClaimed += uint128(amount);
+    
+    _subCache(msg.sender, uint96(amount));
+    
+    IERC20(token).transfer(msg.sender, amount);
+  }
+  
+  function _subCache(address _member, uint96 amount) internal {
+    uint32 dstRepNum = numCheckpoints[_member];
+    uint96 dstRepOld = dstRepNum > 0 ? checkpoints[_member][dstRepNum - 1].votes : uint96(amountPerMember);
+    uint96 dstRepNew = sub96(dstRepOld, amount, "Comp::_moveVotes: vote amount overflows");
+    _writeCheckpoint(_member, dstRepNum, dstRepOld, dstRepNew);
+  }
+  
+  // The exact copy from COMP token
+  function _writeCheckpoint(address delegatee, uint32 nCheckpoints, uint96 oldVotes, uint96 newVotes) internal {
+    uint32 blockNumber = safe32(block.number, "Comp::_writeCheckpoint: block number exceeds 32 bits");
 
-    token.transfer(msg.sender, amount);
+    if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
+      checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;
+    } else {
+      checkpoints[delegatee][nCheckpoints] = Checkpoint(blockNumber, newVotes);
+      numCheckpoints[delegatee] = nCheckpoints + 1;
+    }
+
+    emit DelegateVotesChanged(delegatee, oldVotes, newVotes);
   }
 
-  function delegateVote(address _to) external onlyAdmin {
+  // The exact copy from COMP token
+  function safe32(uint n, string memory errorMessage) internal pure returns (uint32) {
+    require(n < 2**32, errorMessage);
+    return uint32(n);
+  }
+
+  // The exact copy from COMP token
+  function sub96(uint96 a, uint96 b, string memory errorMessage) internal pure returns (uint96) {
+    require(b <= a, errorMessage);
+    return a - b;
+  }
+
+  // onlyAdmin can trigger this
+  function delegateVote(address _to) external {
     ICRV(token).delegate(_to);
   }
-
+  
   // GETTERS
   // will return amountPerMember for non members, but this check will be covered with an extra function
   function availableToWithdrawForMember(address _member) public view returns (uint256) {
@@ -131,6 +183,54 @@ contract PPVesting {
         member.alreadyClaimed
     );
   }
+  
+  // A copy from COMP token, changes are marked with XXX
+  function getPriorVotes(address account, uint blockNumber) public view override returns (uint96) {
+    require(blockNumber < block.number, "Comp::getPriorVotes: not yet determined");
+
+    uint32 nCheckpoints = numCheckpoints[account];
+    // XXX NEW: originally was 
+    if (nCheckpoints == 0) {
+        if (members[account].active == true) {
+            // A member has not claimed any tokens yet
+            return uint96(amountPerMember);
+        } else {
+            // Not a member
+            return 0;
+        }
+    }
+    // XXX ORIGINAL: originally was 
+    // if (nCheckpoints == 0) {
+    //    return 0;
+    // }
+    // XXX END: originally was 
+
+    // First check most recent balance
+    if (checkpoints[account][nCheckpoints - 1].fromBlock <= blockNumber) {
+        return checkpoints[account][nCheckpoints - 1].votes;
+    }
+
+    // Next check implicit zero balance
+    if (checkpoints[account][0].fromBlock > blockNumber) {
+        return 0;
+    }
+
+    uint32 lower = 0;
+    uint32 upper = nCheckpoints - 1;
+    while (upper > lower) {
+        uint32 center = upper - (upper - lower) / 2; // ceil, avoiding overflow
+        Checkpoint memory cp = checkpoints[account][center];
+        if (cp.fromBlock == blockNumber) {
+            return cp.votes;
+        } else if (cp.fromBlock < blockNumber) {
+            lower = center;
+        } else {
+            upper = center - 1;
+        }
+    }
+    return checkpoints[account][lower].votes;
+  }
+
 
   // PURE
   function availableToWithdraw(
