@@ -27,7 +27,8 @@ The contract is initialized with the following parameters that can't be changed 
 - the contract doesn't use a proxy pattern, there is no way to upgrade it;
 - there will be multiple instances of this contract with different initialization parameters;
 - the contract is compatible with the following `CompInterface` and provides cached getPriorVotes() information like CVP token does;
-- to provide detailed information about member balance at a specific block, each withdrawal() updates cached value similar to CVP token.
+- to provide detailed information about member balance at a specific block, each withdrawal() updates cached value similar to CVP token;
+- a member has an option to transfer his or her  vested tokens to another address, for example in a case when a private key is compromised.
 
 ## Methods
 
@@ -76,7 +77,8 @@ contract PPVesting is CompInterface {
     
   struct Member {
     bool active;
-    uint128 alreadyClaimed;
+    bool transferred;
+    uint96 alreadyClaimed;
   }
   
   /// @notice A checkpoint for marking number of votes from a given block
@@ -88,7 +90,7 @@ contract PPVesting is CompInterface {
   address immutable public token;
   uint256 immutable public startBlock;
   uint256 immutable public durationInBlocks;
-  uint256 immutable public amountPerMember;
+  uint96 immutable public amountPerMember;
 
   address public owner;
 
@@ -103,7 +105,7 @@ contract PPVesting is CompInterface {
     uint256 _startBlock,
     uint256 _durationInBlocks,
     address[] memory _membersList,
-    uint256 _amountPerMember
+    uint96 _amountPerMember
   ) public {
     token = _tokenAddress;
     owner = msg.sender;
@@ -125,11 +127,39 @@ contract PPVesting is CompInterface {
     uint256 amount = availableToWithdrawForMember(msg.sender);
     require(amount > 0);
   
-    members[msg.sender].alreadyClaimed += uint128(amount);
+    members[msg.sender].alreadyClaimed += uint96(amount);
     
-    _subCache(msg.sender, uint96(amount));
+    _subCache(msg.sender, uint96(amountPerMember - members[msg.sender].alreadyClaimed));
     
-    IERC20(token).transfer(msg.sender, amount);
+    IERC20(token).transfer(_to, amount);
+  }
+
+  function transfer(address _to) external {
+    Member storage from = members[msg.sender];
+    Member storage to = members[_to];
+
+    uint96 alreadyClaimed = from.alreadyClaimed;
+
+    require(from.active == true);
+    require(to.transferred == false);
+    
+    members[msg.sender] = Member({
+      active: false,
+      transferred: true,
+      alreadyClaimed: 0
+    });
+
+    members[_to] = Member({
+      active: true,
+      transferred: false,
+      alreadyClaimed: alreadyClaimed
+    });
+    
+    // For ex. amountPerMember = 5000, alreadyClaimed = 2000:
+    // 3000 (available) - (5000 amountPerMember - 2000 alreadyClaimed) = 0 newAvailable
+    _subCache(msg.sender, amountPerMember - alreadyClaimed);
+    // 5000 (available) - 2000 (alreadyClaimed) = 3000 newAvailable
+    _subCache(_to, alreadyClaimed);
   }
   
   function _subCache(address _member, uint96 amount) internal {
@@ -150,7 +180,7 @@ contract PPVesting is CompInterface {
       numCheckpoints[delegatee] = nCheckpoints + 1;
     }
 
-    emit DelegateVotesChanged(delegatee, oldVotes, newVotes);
+     emit DelegateVotesChanged(delegatee, oldVotes, newVotes);
   }
 
   // The exact copy from COMP token
@@ -189,7 +219,7 @@ contract PPVesting is CompInterface {
     require(blockNumber < block.number, "Comp::getPriorVotes: not yet determined");
 
     uint32 nCheckpoints = numCheckpoints[account];
-    // XXX NEW: originally was 
+    // XXX NEW:
     if (nCheckpoints == 0) {
         if (members[account].active == true) {
             // A member has not claimed any tokens yet
@@ -199,11 +229,11 @@ contract PPVesting is CompInterface {
             return 0;
         }
     }
-    // XXX ORIGINAL: originally was 
+    // XXX ORIGINAL
     // if (nCheckpoints == 0) {
     //    return 0;
     // }
-    // XXX END: originally was 
+    // XXX END 
 
     // First check most recent balance
     if (checkpoints[account][nCheckpoints - 1].fromBlock <= blockNumber) {
