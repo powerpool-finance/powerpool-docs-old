@@ -19,7 +19,7 @@ the minimal number of votes required to create a proposal) and quorum (the minim
 * `Voting Boost` - CVP holders can lock CVP tokens in this contract. The longer the tokens are locked, the more votes the holder receives. Tokens are unlocked with the cool down period, this means that after calling the `withdraw()` method, tokens are released according to the release schedule;
 * `xDAI Mediator` / `Matic Mediator` - the contract contains information on the number of votes in the sidechain, equivalent to the number of CVP-tokens blocked in `xDAi CVP Locker` / `Matic Network CVP Locker`. The number of votes is used in the `PPVotingL2` contract;
 * `PPVotingL2` - the sidechain voting contract. Uses `xDAI Mediator` /` Matic Mediator` as the source for the number of votes per block. Makes a decision on how the balance of tokens of CVP contracts `xDAi CVP Locker` /` Matic Network CVP Locker` votes;
-![ppVotingOverview](https://raw.githubusercontent.com/powerpool-finance/powerpool-docs/blob/master/images/ppVotingOverview.png)
+![ppVotingOverview](https://github.com/powerpool-finance/powerpool-docs/blob/master/images/ppVotingOverview.png?raw=true)
 ## L1 (ETH) Contracts
 
 ----
