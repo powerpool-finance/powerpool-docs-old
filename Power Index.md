@@ -29,7 +29,9 @@ Each product, depending on the liquidity supplied by its users, has to be proper
 
 Because of this, the launch of the pool and attraction of liquidity to it is proposed to be based on a CVP liquidity mining strategy. Governance token holders will be able to deposit their tokens into the pool and mine CVP, which has voting power utility at the meta-governance layer.
 To maintain shares of governance tokens in this pool, we propose a special feedback loop in the form of dynamic CVP rewards based on the pool composition:
+
 `The PowerPool idea has a reflexive mechanism built in where if the scarce supply and 1/8th target threshold for fees keeps driving the price higher, APY from the liquidity mining rewards also rises with it, potentially allowing us to taper this longer over time.`
+
 It is that simple - if the Power Index has an ideal composition, liquidity mining rewards increase to the maximum possible, and if not - it decreases based on the real pool composition. It is a way to maintain the pool state near the target shares, which were initially defined by the PowerPool community.
 The yVault strategy is mentioned as another option to facilitate Power Index bootstrapping. It is noted that yearn.finance is a liquidity router that can supply liquidity to any protocol, where it can be efficiently utilized using yVault:
 
