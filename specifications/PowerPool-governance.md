@@ -45,17 +45,14 @@ interface PPMediatorL1 {
 	function deposit(uint256 amount) external;
 
 	// CVP Holder withdraws their CVPs anytime
-	function withdraw(uint256 amount) external;
+	function withdraw(address to, uint256 amount) external;
 
 	// If a AMB message failed to execute anyone can
 	// send it again
-	function syncBalanceOf(address account) external;
+	function syncBalances(address account[]) external;
 
-	// A call from L2 to create a proposal in PPGovernor contract
-	function createProposal(bytes calldata) external onlyBridge;
-
-	// A call from L2 to cast a vote in PPGovernor contract
-	function castVote(uint256 proposalId) external onlyBridge;
+	// A call from L2 to create a proposal or cast a vote in PPGovernorL1 contract
+	function handleCallGovernorL1(bytes4 _signature, bytes calldata _args) external;
 
 	// PPGovernor sets a new AMB address
 	function setAMBAddress(address) external onlyOwner;
@@ -66,7 +63,7 @@ interface PPMediatorL1 {
 ```
 
 #### PPGovernorL1
-* the contract is the exact copy of GovernorAlpha contract from Compound V2 repo deployed at
+* the contract a copy of GovernorAlpha contract from Compound V2 repo deployed at
 https://etherscan.io/address/0xc0dA01a04C3f3E0be433606045bB7017A7323E38#code with the same
 compiler configuration;
 * is accompanied by a Timelock contract;
@@ -91,14 +88,9 @@ compiler configuration;
 
 * a CvpInterface compatible contract;
 * it is used by PPVotingL2 as a source of locked CVP balances;
-* it accepts and stores information from AMB about current balances and totalSupply values;
-* the totalSupply is dynamic, calculated and updated each time using an incoming balance delta;
-* if an incoming balance update message makes totalSupply negative, this message will be reverted;
-* an incoming balance message nonce should be greater than a previous one, but there is no strict greater by one rule;
-* if one of the balance increase messages are lost and blocks another balance decrease message from executing by making a
- total supply negative, it's up to any party to fix this issue;
-* thus, totalSupply at PPMediatorL1 and totalSupply at PPMediatorL2 could be different due inconsistent message transmission;
-* an external observer could fix this imbalance using a permissionless method of PPMediatorL1 called `syncBalanceOf(address)`;
+* it accepts and stores information from AMB about current balances;
+* it doesn't account totalSupply value, since the quorum threshold is relative to a predefined total Supply of CVP tokens;
+* an external observer could fix this imbalance using a permissionless method of PPMediatorL1 called `syncBalances(address[])`;
 * proxies `create a proposal`/`cast a vote` calls from PPVotingL2's Timelock to ETH Mediator;
 * contract is proxied, a proxyOwner role is assigned to PPVotingL2;
 * contract is ownable; Owner address is assigned to PPVotingL2's Timelock.
@@ -120,14 +112,15 @@ interface PPMediatorL2 {
 }
 ```
 
-#### PPVotingL2
+#### PPGovernorL2
 
 * uses PPMediatorL2 as a source of user balances;
 * governorAlpha compatible contract;
+* inherits from PPGovernorL1 with only `votingPeriod()` changed to 34560 blocks or ~2 days for 5s blocks;
 * is accompanied by a Timelock contract;
 * has no owner;
 * not proxied;
-* guardian is set to 0x0 (zero) address;
+* guardian is set to 0xB258302C3f209491d604165549079680708581Cc address;
 * updates could be done by deploying a new version of a contract with the same PPMediatorL2 as a balances source.
 
 ## Common contracts
