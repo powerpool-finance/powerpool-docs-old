@@ -1,5 +1,5 @@
 # Power Index Proposal: Team Statement
-`A proposal by Delphi Digital was recently published on the Power Forum. It relates to adding a brand new product - a self-balancing GT index into PowerPool protocol. Below is our team statement on the proposal.``
+`A proposal by Delphi Digital was recently published on the Power Forum. It relates to adding a brand new product - a self-balancing GT index into PowerPool protocol. Below is our team statement on the proposal.`
 
 As soon as we learned about this new product idea, our team contacted Delphi Digital and discussed it in detail. Internally, we quickly gave this product a catchy name - the Power Index. In this article we’re publishing a follow-up to our discussions with Delphi Digital, as well as our view on its architecture, development, and implementation into the PowerPool protocol.
 
@@ -18,25 +18,30 @@ The index can be implemented as a kind of Balancer pool (with several major arch
 
 Balancer Smart Pools is proposed as a technical solution for this idea due to its flexibility and ability to meet the requirements of the fast-changing DeFi landscape:
 
-`Smart Pools have other attractive features such as adding or removing tokens, pausing swaps, and of course adjustable weights/fees.``
+`Smart Pools have other attractive features such as adding or removing tokens, pausing swaps, and of course adjustable weights/fees.`
 
 This index is a multipurpose product. It is a web3.0-grade ETF product (the BPT token clearly represents a basket of GTs), it also acts as a liquidity pool for exchanging governance tokens and an instrument to pool a large number of governance tokens into the PowerPool protocol. In addition to that, it provides multiple win-win integration opportunities with other DeFi protocols.
 
 ### Bootstrapping and maintenance incentives
 Each product, depending on the liquidity supplied by its users, has to be properly bootstrapped and maintained. The basic bootstrapping strategy is based on the fact that there are already a lot of governance token holders:
+
 `Another thing that potentially mitigates this concern is that there are a lot of investors who hold popular DeFi governance tokens like YFI, LEND, SNX, etc. in their portfolios already. Now these investors can deposit them into the pool, receive similar exposure, and yield farm those assets.`
+
 Because of this, the launch of the pool and attraction of liquidity to it is proposed to be based on a CVP liquidity mining strategy. Governance token holders will be able to deposit their tokens into the pool and mine CVP, which has voting power utility at the meta-governance layer.
 To maintain shares of governance tokens in this pool, we propose a special feedback loop in the form of dynamic CVP rewards based on the pool composition:
 `The PowerPool idea has a reflexive mechanism built in where if the scarce supply and 1/8th target threshold for fees keeps driving the price higher, APY from the liquidity mining rewards also rises with it, potentially allowing us to taper this longer over time.`
 It is that simple - if the Power Index has an ideal composition, liquidity mining rewards increase to the maximum possible, and if not - it decreases based on the real pool composition. It is a way to maintain the pool state near the target shares, which were initially defined by the PowerPool community.
 The yVault strategy is mentioned as another option to facilitate Power Index bootstrapping. It is noted that yearn.finance is a liquidity router that can supply liquidity to any protocol, where it can be efficiently utilized using yVault:
-`Here’s a vault strategy we believe could be attractive for all three parties: YFI holders, PowerPool Liquidity Providers/Farmers, and long-term CVP holders.
 
+`Here’s a vault strategy we believe could be attractive for all three parties: YFI holders, PowerPool Liquidity Providers/Farmers, and long-term CVP holders.
 Take the PowerPool LP shares which represent a pseudo DeFi ETF and throw it into a vault strategy farming PowerPool’s CVP. Yes, the vault strategy sells the CVP it earns, but you keep the permanent liquidity and the yield from the vault will only keep making it deeper over time also being reflexive.
-Thus, the value generated from the vault strategy selling CVP = the amount of new permanent liquidity added to the PowerPool.``
+Thus, the value generated from the vault strategy selling CVP = the amount of new permanent liquidity added to the PowerPool.`
+
 ### The all-in-one governance tool
 All governance token holders providing assets to this pool will receive additional value as they can not only farm tokens but also participate in governance of different protocols:
+
 `In addition to the CVP rewards they’ll receive, farmers can now take part in fast, cheap governance proposals all in one place across their entire portfolio, boosting engagement that wasn’t there before.`
+
 Taking into account layer-2 integration and the possibility to participate in voting with negligible gas costs, it is unquestionably a very strong and unique feature of the Power Index.
 ### The permanent voting power treasury
 The proposal develops a previously published idea of Delphi initially dubbed a “Blackhole for Governance tokens”. The idea is based on the fact that during a liquidity mining program the main income is based on LM rewards in the form of CVP and not on fees. As the Balancer Pool design includes exchange fees, it is proposed to collect these fees into a special treasury contract, which will hold them (a portfolio containing tokens of the Power Index) infinitely. It will be a portfolio of assets, belonging to a protocol itself representing permanent voting power.
@@ -51,8 +56,9 @@ Delphi’s proposal rightly points out that a high, fully diluted CVP market cap
 As it was proposed by Delphi, Power Index can be just the first step to build a whole ecosystem of different indexes consisting of governance tokens. If the first Power Index gains sufficient traction, indexes for other sectors of the market can be released.
 
 The final part of the proposal is devoted to highlighting the necessity of strong integrations with other Defi products to deliver it to the market in the proper way. The ongoing PowerPool integrations with xDAI and Boardroom have been mentioned.
+
 `More integrations are necessary though to really help PowerPool gain enough traction to make the move from exciting experiment to an innovative project with a lasting impact on the space.
-An integration with exchange aggregators such as 1inch, Debank, and Dex.Ag could end up funneling some meaningful volume to PowerPool if its pools attract the depth some of these farming initiatives have had in the past.``
+An integration with exchange aggregators such as 1inch, Debank, and Dex.Ag could end up funneling some meaningful volume to PowerPool if its pools attract the depth some of these farming initiatives have had in the past.`
 
 ## Our view on this proposal and discussion
 First of all, our team is grateful for such an impressive idea and all discussions and brainstorming that was made to polish, integrate it into the PowerPool technical roadmap, and create an efficient bootstrapping strategy based on the current market state.
@@ -71,7 +77,6 @@ One of the biggest features of PowerPool is that it is a meta-governance protoco
 
 The PowerPool governance system can use different sources of votes: CVP tokens, BPT/UniV2 LP tokens, locked tokens in the Beta/Gamma vesting contracts, Vote Boost contract votes (it is the special contract, where user can lock his tokens and get an additional voting power for that), xDAI and Matic root contracts (it allows users to vote using corresponding L2 networks and save on gas costs). So, all protocol users can vote in a convenient way, providing liquidity to Balancer/Uniswap pools, being Beta/Gamma testers or users of L2 networks. Launching Power Index, we will add a BPT token of this pool as an additional source of votes, so all Power Index liquidity providers will be able to vote in PowerPool governance.
 
-
 ## Technical implementation and product roadmap
 To build Power Index with all necessary functions (such as a possibility to vote in Defi protocols using pooled tokens and change pool composition on community demand) our team forked Balancer and implemented all necessary changes to it. It also includes a brand new UI/UX, which will fit the functionality of the pool.
 
@@ -82,7 +87,6 @@ Launch of the Power Index is planned to execute in several phases. On the Phase 
 If this idea will be initially accepted by PowerPool community, the liquidity mining program for Power Index will be designed by mutual efforts of PowerPool, Delphi Digital, and any other interested parties (we wait for all participants in brainstorming on our Power Forum in the special section, which will be launched soon).
 
 Finally, once we will receive the results of the security audit of the Balancer fork (Power Balancer, as we defined it), it will be uncapped and open for liquidity provision and mining CVP tokens. As the PowerPool team, we will make a call to all our supporters and protocol enthusiasts to share their ideas for integration of Power Index with any other Defi instruments and protocols.
-
 
 ## Closing notes
 As a closing note, we want to point out that PowerPool is a community-driven project so will Power Index exist or not is based on CVP token holders decision. This also applies to the liquidity mining program and all other activities, ongoing on product testing and launch. Please, join our Power Forum, and share your ideas there, create proposals and help us to build the meta-governance protocol for web3.0.
