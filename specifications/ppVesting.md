@@ -28,7 +28,7 @@ The contract is initialized with the following parameters that can't be changed 
 - there will be multiple instances of this contract with different initialization parameters;
 - the contract is compatible with the following `CompInterface` and provides cached getPriorVotes() information like CVP token does;
 - to provide detailed information about member balance at a specific block, each withdrawal() updates cached value similar to CVP token;
-- a member has an option to transfer his or her  vested tokens to another address, for example in a case when a private key is compromised.
+- a member has an option to transfer his or her vested tokens to a new address, for example in a case when a private key is compromised. The new address means that it has never been used as the vesting contract member address before.
 
 ## Methods
 
