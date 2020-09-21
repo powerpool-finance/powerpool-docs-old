@@ -23,7 +23,7 @@ The contract is initialized with the following parameters that can't be changed 
 - initialization with Merkle tree root hash, which saves deployment gas usage, was intentionally ignored in order to simplify contract;
 - ERC20 token CAP is 100,000,000 * 10**18 (100000000000000000000000000);
 - calculations will be covered with SafeMath;
-- compilation configuration: Solidity version: v0.6.12, optimizer: enabled, runs: 20000, EVM: Istanbul (we're flexible on compiler version);
+- compilation configuration: Solidity version: v0.6.12, optimizer: enabled, runs: 200, EVM: Istanbul (we're flexible on compiler version);
 - the contract doesn't use a proxy pattern, there is no way to upgrade it;
 - there will be multiple instances of this contract with different initialization parameters;
 - the contract is compatible with the following `CompInterface` and provides cached getPriorVotes() information like CVP token does;
