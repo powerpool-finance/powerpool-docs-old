@@ -40,8 +40,12 @@ The contract is initialized with the following parameters that can't be changed 
 
 ### View methods
 
-* function availableToWithdrawForMember(address _member) public view returns (uint256);
-* function availableToWithdrawForMemberWithCheck(address _member) public view returns (uint256) - the same as above,but returns 0 if a member is not active;
+* `function availableToWithdrawFor(uint256 _alreadyClaimed) public view returns (uint256)` - returns the available amount for withdrawal based on the current contract values and an already claimed amount input;
+* `function availableToWithdrawForMember(address _member) public view returns (uint256)` - returns available amount for withdrawal by a given member in the current block based on the current contract values;
+* `function availableToWithdrawForMemberInTheNextBlock(address _member) external view returns (uint256)` - the same as the above, but provides a value for the next block instead of the current;
+* `function getPriorVotes(address account, uint256 blockNumber) external override view returns (uint96)` - provides information about a member unclaimed balance in order to use it in a voting contract;
+* `function hasStarted() external view returns (bool)` - checks whether the vesting period has started or not; 
+* `function hasEnded() external view returns (bool)` - checks whether the vesting period has ended or not;
 
 ### Pure methods
 * function availableToWithdraw(
