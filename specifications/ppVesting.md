@@ -35,6 +35,7 @@ The contract is initialized with the following parameters that can't be changed 
 ### State changing methods
 
 * withdraw(address _to) - A member can withdraw currently unlocked amount;
+* transfer(address _to) - A member can transfer the vested right to a new address, for ex. when the initial key is compromised;
 * transferOwnership(address _to) - An owner can transfer his ownership to another address;
 * delegateVote(address _to) - An owner can delegate all the balance of this contract to a given address;
 
