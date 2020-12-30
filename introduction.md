@@ -4,7 +4,7 @@
 <h4>Introduction</h4>
 <p>The decision-making is playing a central role in everyone’s life. No matter how serious decisions you make, you are personally affected by many choices of other entities like governments, corporations, financial institutions, and many others. Despite the democratic nature of developed societies, all of them de-facto are governed by influencers of different types – corporations, syndicates, and people with political influence and colossal capital.</p>
 <p>The crypto industry and, in particular, the DeFi space is considered to be even more democratic and decentralized in decision-making and value distribution. On-chain governance mechanisms are regarded as a holy grail to make our industry sustainable and resilient. Recently it became evident that Defi in 2020 de-facto develops under the slogan “everyone gets a governance token” (from now “governance token” = GT). No doubts, a lot of crypto users are involved in dozens of “governance experiments” now with varying degrees of quality. Even third-tier and almost dead scammy ICOs try to become a “Defi startup” and introduce a governance token.</p>
-<p>The main difference of nowadays hype from the previous ones (like ICO’s bubble) is that some platforms have dozens of thousands of users and billions of dollars of cumulative locked capital. So, governance questions become especially important when we are talking about vast amounts of money. These tokens are not useless (as they were in the ICO epoch) and play a vital role in the ecosystem. The total capitalization of governance tokens can be assumed as ~3-4 bln USD, and it snowballs. It is possible to make a bold prediction about the $25 bln valuations at the end of 2020.</p>
+<p>The main difference of nowadays hype from the previous ones (like ICO’s bubble) is that some platforms have dozens of thousands of users and billions of dollars of cumulative locked capital. So, governance questions become especially important when we are talking about vast amounts of money. These tokens are not useless (as they were in the ICO epoch) and play a vital role in the ecosystem. As of December 2020, the total capitalization of governance tokens is approximately $20 bln USD and it continues to grow.</p>
 <p>The main question that arises here is the real monetary value of such tokens for different groups of stakeholders. If there is a significant economic activity on the protocol, the possibility of governing is valuable.</p>
 <h4>The issues related to governance tokens</h4>
 <p>Digging deeper into the design and practical implementations results of governance tokens, some issues are evident:</p>
@@ -33,15 +33,17 @@
 </ul>
 <p>In the next sections, we will describe the vision, implementation, and bootstrapping process of the Power Pool.</p>
 <h4>Power Pool protocol in a nutshell</h4>
+
 <em>“United we stand, divided we fall”</em>
+
 <p>The PowerPool is a lending protocol for the governance tokens, such as COMP, BAL, LEND, YFI, BZRX, AKRO, and many others. It is important to note that currently, PowerPool is targeted on the Defi market as the hottest one, but generally is not limited to it and can serve for pooling any other governance tokens in the Ethereum ecosystem.</p>
-<p>The PowerPool is based on a simple lending model, close to Compound’s one from the first sight. Every holder of GTs can supply liquidity into a contract and get the interest rate if there is a demand. Any person on the market can borrow GTs placing allowed digital assets as collateral. Currently, we plan to add ETH, wBTC, and DAI as collaterals for borrowing governance tokens. On the other hand, it has certain upgrades, and the particular set of oracles developed to form price feeds of highly-volatile assets such as GTs.</p>
-<p>Talking about the economic nature of GTs, they are unique assets in the context of lending/borrowing mechanics. The utility of GTs is not constant in time (comparing, for example, with payment tokens such as stablecoins). Talking strictly, it appears only during voting. Our vision is to introduce a novel type of lending logic, which is not available by default in Compound or any other lending protocols but can be very suitable for GTs. We plan to cover it in the next articles.</p>
+<p>The PowerPool is based on a simple liquidity pool model, similar to Balancer at first sight. Under a liquidity pool model, the voting power of the PowerPool is equal to all of the tokens deposited, maximizing governance power. The pool comprises of the top Defi governance tokens, and additionally includes the CVP governance token. Participants who deposit tokens into the pool will be rewarded in CVP for providing this liquidity. The more a specific token is required to reach target weighting in the index, the higher the CVP yield will be for depositing.</p>
+<p>Talking about the economic nature of GTs, they are unique assets in the context of lending/borrowing mechanics. The utility of GTs is not constant in time (comparing, for example, with payment tokens such as stablecoins). Talking strictly, it appears only during voting.</p>
 <h4>Features & Advantages</h4>
 <p>The Power Pool offers the following advantages to the end-users and Defi protocols:</p>
 <ol>
-<li><b>Influence farming.</b> Users can earn additional GTs from their holdings. As a result, the stake of the user continually grows as the interest rate is paid in the same governance token.</li>
-<li><b>Solution for the Voters Apathy.</b> With the yield and LM as incentives, passive token holders will be motivated to pool their GTs in the PowerPool. With demand, these tokens will participate in voting, increasing the overall vote capitalization. With the lack of demand, tokens can participate in the vote even if nobody borrowed them according to PowerPool token holders' decision.</li>
+<li><b>Influence farming.</b> By providing Defi tokens, users earn CVP. As the pool grows, the requirement to add CVP to the pool will grow, hence naturally increasing demand for the token.</li>
+<li><b>Solution for the Voters Apathy.</b> With the Liquidity Mining as an incentive, passive token holders will be motivated to pool their GTs in the PowerPool. These tokens will participate in voting, increasing the overall vote capitalization.</li>
 <li><b>Accumulation of voting power.</b> The voting power, distributed across the thousands of minority token holders is useless. Now it can be concentrated in one place via the PowerPool and become a real force in the governance of protocols.</li>
 </ol>
 <h4>The protocol token specification</h4>
@@ -49,29 +51,24 @@
 <p>The token functions (voting on proposals regarding protocol operation):</p>
 <ol>
 <li>Listing of new liquidity pools in the Power Pool protocol and allocation of liquidity mining rewards to them</li>
-<li>Adding and removing collateral types in the protocol</li>
-<li>Adding new lending logic to the protocol (now we consider fixed-term agreements and some other ones)</li>
 <li>Upgrade and maintain the source code of the smart contracts</li>
 </ol>
-<p>Additionally, CPV has one unique function that wasn’t present in other lending protocols before. It comes down to direct voting using remaining (unclaimed by borrowers) GTs in the Power Pool lending contracts. So, CVP captures value from the possibility to govern the Power Pool protocol itself and from the possibility to decide how pooled GTs will vote.</p>
+<p>Additionally, CVP captures value from the possibility to govern the Power Pool protocol itself and from the possibility to decide how pooled GTs will vote.</p>
 
->The CVP holders decide how unclaimed pooled governance tokens will vote at the every vote occuring in listed Defi protocols
+>The CVP holders decide how pooled governance tokens will vote at the every vote occuring in listed Defi protocols
 >
 >The CVP token doesn't have a pre-mine and has pure liquidity
 
-<p>The token metrics, as well as details of special token functions will be fully featured in the special article coming next days. All you need to know - you cannot buy this token now, there is no sale. If you found something listed at any DEX until the protocol is live in the Mainnet - it is a SCAM. The only option to receive tokens is participation in liquidity mining.</p>
 <h4>Roadmap and how to participate?</h4>
-<p>At the moment, we have our project ready to be deployed in testnet. Mainnet comes soon. There are three main phases for bootstrapping the protocol:</p>
-<ol>
-<li>The testnet phase. As our product is experimental, we need to test the functionality of the main components in the safe testnet environment. We invite all Defi community members to test protocol, find bugs, and try to attack it. It will last approximately one week. Subscribe to our Twitter if you don’t want to miss it! Sweet bounty for active participants is included</li>
-<li>The babynet phase. We are engineers trying to make a secure and reliable product, and we found it very risky to attract a massive amount of liquidity to unaudited protocol. During the limited mainnet phase the Baby version of PowerPool will be launched with a $50,000 liquidity cap. We estimate that the limited phase will last two weeks, and applications will be open soon.</li>
-<li>The mainnet phase. This phase is uncapped and starts right after passing the security audit and carefully testing all protocol features. From this moment PowerPool will grow, attract more and more liquidity to become a real force in the governance of Defi protocols controlled by the community.</li>
-</ol>
+It is best to stay updated with our latest achievements and plans via social media.
+
 <p><b>Social Links:</b></p>
 <p><b>Discord:</b> https://discord.gg/YDABRVa </p>
 <p><b>Twitter:</b> https://twitter.com/powerpoolcvp </p>
 <h4>Links</h4>
+
 [1] https://cryptoslate.com/makerdao-whale-with-94-voting-power-reduces-dai-stability-fee-by-4 <br>
 [2] https://www.evanvanness.com/post/184616403861/aragon-vote-shows-the-perils-of-onchain-governance
+
 <h4>Risk warnings</h4>
 <p>It is an experimental software built by Defi enthusiasts on a non-commercial basis. It is highly risky to put your money in the protocol until the security audit is successfully passed. The protocol is decentralized, free to use by everyone, and governed directly by its users. The developers, users, or any other entity are not responsible for possible effects of its usage, for example affecting the governance and operation of any other decentralized protocols. The CVP is a governance token distributed to the end-users of the protocol via liquidity mining and is not associated with any legal entity and doesn't grant any rights or income. As there was no token sale, the token doesn't have any initially defined price, and any deals with it are the responsibility of its holders.</p>
