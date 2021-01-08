@@ -36,8 +36,8 @@ Every `piToken` has a matching `Router` contract bound to this particular `piTok
 `PowerIndexBasicRouter.sol` is an abstract Router contract. Protocol implementation routers (e.g. `YearnPowerIndexRouter.sol`, `AavePowerIndexRouter.sol,` etc.)  should inherit this contract.
 
 * The following values can be set only once during the contract deployment:
-	* `piToken` -  WrappedPiErc20.sol address;
-	* `pvp` - PermanentVotingPowerV1.sol address;
+	* `piToken` -  `WrappedPiErc20.sol` address;
+	* `pvp` - `PermanentVotingPowerV1.sol` address;
 * `PowerIndexBasicRouter.sol` has 2 managing roles: the `Owner` and the `poolRestrictions` grantee checked using `poolRestrictions.isVotingSenderAllowed()` method;
 * if the `Owner` sets the rebalancing interval to 0, `piToken` will never bypass rebalancing. Otherwise, `piToken` won't rebalance until this interval has passed from the last rebalance action;
 * if the `Owner` sets the reserve ratio to 0, `piToken` will stake all the underlying tokens in the staking contract;
