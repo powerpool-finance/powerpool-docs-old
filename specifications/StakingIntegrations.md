@@ -1,4 +1,4 @@
-# Staking Underlying Protocols Integrations
+# Underlying Protocols Integrations with Staking
 
 We divide the staking system into `Token wrappers` and their `Routers`:
 
