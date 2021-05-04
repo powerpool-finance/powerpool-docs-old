@@ -10,6 +10,9 @@ The contract contains addresses, which should receive `CVP` tokens with lock and
 - Vesting values are calculated using timestamps instead of block numbers (vote caching still uses block numbers);
 - Ownable trait was added back;
 - Owner can increase `durationT` value any number of times he wants with limit;
+- Owner can increase `personalDurationT` for a particular member;
+- Owner can disable member anytime;
+- A member can renounce his membership anytime;
 - A member can delegate votes to a non-member address;
 
 
@@ -20,9 +23,11 @@ The contract is initialized with the following parameters that can't be changed 
 - pre-defined vote vesting start timestamp `startV` (immutable);
 - pre-defined vote vesting duration in seconds `durationV` (immutable);
 - pre-defined token vesting start timestamp `startT` (mutable since `PPTimedVesting.sol`);
-- pre-defined token vesting duration in seconds `durationT` (mutable since `PPTimedVesting.sol`);
 - the number of votes/tokens, allocated for each member; the same for all members (immutable);
 - a list of vesting members (mutable, since it can't be represented as immutable, but there is no way to change it later);
+
+The following params could be changed later by the owner:
+- the token vesting duration in seconds `durationT` (mutable since `PPTimedVesting.sol`);
 
 ## Specification
 - `CVP` tokens for each member are vested linearly between `startT` and `endT.` This means that the number of tokens that address can withdraw from the contract is proportional to the time elapsed since the beginning of the vesting period;
@@ -56,8 +61,18 @@ The contract is initialized with the following parameters that can't be changed 
 - before the `endT` timestamp, the `claimTokens()` automatically calls `claimVotes()` to avoid cases when member votes and tokens sums exceed the initial vesting amount;
 - after the `endT` timestamp, the `claimTokens()`doesn't call `claimVotes()`;
 - after the end of the token vesting for `block.timestamp >= endT,` `getPriorVotes()` function will return `0` for all requests, even for queries against the blocks with non-zero cached votes;
-- if someone created the proposal before `endT` and a user voted after `endT,` he won't be able to use his votes since the contract will return 0 for `getPriorVotes` after `endT;`
-- after the Owner calls `increaseDurationT(),` there will be a gap when a user doesn't receive rewards since he has more funds already vested to him than he should receive according to the formula;
+- there are 3 endT values:
+  - `endT` - the global endT value
+  - `personalEndT` - a custom value for a particular member
+  - `memberEndT` - the function which returns:
+    - a member's personalEndT if it is not 0
+    - the global endT otherwise
+- there could be cases when:
+  - endT > personalEndT
+  - endT == personalEndT
+  - endT < personalEndT
+- if someone created the proposal before `memberEndT` and a user voted after `personalEndT,` he won't be able to use his votes since the contract will return 0 for `getPriorVotes` after `endT;`
+- after the Owner calls `increaseDurationT()` or `increasePersonalDurationT()`, there will be a gap when a user doesn't receive rewards since he has more funds already vested to him than he should receive according to the formula;
 - when a member claims votes, the corresponding amounts of votes excluding the already claimed token amount is accrued on delegated voting balance:
 
 ```
@@ -68,7 +83,7 @@ curr - current timestamp
 startV - vote vesting period start timestamp
 endV - vote vesting period end timestamp
 startT- token versting period start timestamp
-endT - token vesting period end timestamp
+memberEndT - either a personal or a global token vesting period end timestamp
 ```
 
 ## Methods
@@ -79,12 +94,14 @@ endT - token vesting period end timestamp
 * claimTokens(address _to) - A member itself can claim currently unlocked token amount to the provided address;
 * delegate(address _to) - A member delegates his votes to another address;
 * transfer(address _to) - A member can transfer the vested right to a new address, for ex. when the initial key is compromised;
+* increaseDurationT(uint256 _durationT) - The owner can increase the global endT value
+* increasePersonalDurationT(uint256 _personalDurationT) - The owner can increase a member's personal endT value
 
 ### View methods
 
-* `function getAvailableVotes(uint256 _alreadyClaimed) public view returns (uint256)` - returns the available amount for a vote claim based on the current contract values, and an already claimed amount input;
+* `function getAvailableVotes(uint256 _alreadyClaimed, uint256 _memberEndT) public view returns (uint256)` - returns the available amount for a vote claim based on the current contract values, an already claimed amount input, and a memberEndT;
 * `function getAvailableTokensForMember(address _member) public view returns (uint256)` - returns the available amount for a vote claim by a given member at the current block timestamp based on the current contract values;
-* `function getAvailableTokens(uint256 _alreadyClaimed) public view returns (uint256)` - returns the available amount for a token claim based on the current contract values, and an already claimed amount input;
+* `function getAvailableTokens(uint256 _alreadyClaimed, uint256 _durationT) public view returns (uint256)` - returns the available amount for a token claim based on the current contract values, an already claimed amount input, and a memberDurationT;
 * `function getAvailableTokensForMember(address _member) public view returns (uint256)` - returns the available amount for a token claim by a given member at the current block timestamp based on the current contract values;
 * `function getAvailableTokensForMemberAt(uint256 _atTimestamp, address _member) external view returns (uint256)` - the same as the above, but provides a value for the given timestamp instead of the current;
 * `function getPriorVotes(address account, uint256 blockNumber) external override view returns (uint96)` - provides information about a member unclaimed balance in order to use it in a voting contract;
@@ -95,7 +112,7 @@ endT - token vesting period end timestamp
 * `function hasTokenVestingEnded() external view returns (bool)` - checks whether the token vesting period has ended or not;
 
 * `function getVoteUser(_member) external view returns (address)` - returns the address a _member delegated their votes to;
-* `function debugLastCachedVotes(_member) external view returns (256)` - provides debugging information about the last cached votes checkpoint with no other conditions;
+* `function lastCachedVotes(_member) external view returns (256)` - provides debugging information about the last cached votes checkpoint with no other conditions;
 
 ### Pure methods
 * `function getAvailable(
