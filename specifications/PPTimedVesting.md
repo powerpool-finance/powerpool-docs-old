@@ -9,7 +9,7 @@ The contract contains addresses, which should receive `CVP` tokens with lock and
 ## Significant changes from `ppVesting.sol`
 - Vesting values are calculated using timestamps instead of block numbers (vote caching still uses block numbers);
 - Ownable trait was added back;
-- Owner can increase `durationT` value any number of times he wants with limit;
+- Owner can increase `durationT` value any number of times he wants with a limit of 180 days a time;
 - Owner can increase `personalDurationT` for a particular member;
 - Owner can disable member anytime;
 - A member can renounce his membership anytime;
