@@ -9,7 +9,7 @@ The contract contains addresses, which should receive `CVP` tokens with lock and
 ## Significant changes from `ppVesting.sol`
 - Vesting values are calculated using timestamps instead of block numbers (vote caching still uses block numbers);
 - Ownable trait was added back;
-- Owner can increase `durationT` value any number of times he wants with limit;
+- Owner can increase `durationT` value any number of times he wants with a limit of 180 days a time;
 - Owner can increase `personalDurationT` for a particular member;
 - Owner can disable member anytime;
 - A member can renounce his membership anytime;
@@ -43,6 +43,7 @@ The following params could be changed later by the owner:
 - compilation configuration: Solidity version: v0.6.12, optimizer: enabled, runs: 200, EVM: Istanbul (we're flexible on compiler version);
 - the contract doesn't use a proxy pattern. There is no way to upgrade it;
 - there will be multiple instances of this contract with different initialization parameters;
+- the Owner should keep personalDurationT member values greater than durationT
 - the contract is compatible with the `CompInterface` and provides cached `getPriorVotes()` information as the `CVP` token does;
 - to provide detailed information about the claimed votes at a specific block by a member, each `claimVote()` creates a corresponding vote checkpoint;
 - a member has an option to transfer his or her vested tokens and votes to a new address, for example, when a private key is compromised. The new address means that it has never been used as the vesting contract member address before.
